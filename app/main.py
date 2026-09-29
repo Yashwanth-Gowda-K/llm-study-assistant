@@ -1,8 +1,9 @@
 import os
-
+import json
 from dotenv import load_dotenv
 from google import genai
-from prompts import STUDY_PROMPT
+from google.genai import types
+from prompts import SYSTEM_PROMPT, USER_PROMPT
 
 # Load .env
 load_dotenv()
@@ -17,18 +18,45 @@ if not api_key:
 
 # Create Gemini client
 client = genai.Client(api_key=api_key)
-chat = client.chats.create(
-    model="gemini-2.5-flash"
-)
 while True:
     topic = input("\nYou: ")
     if topic.strip().lower() in ('exit', 'q'):
         print(f"It was nice talking talking to you: {name}")
         break
-    short = ("Explain me everything in simple and shorter with the rules i dont want to expload my head... and use emojs also , dont make the learning boaring make it instersting..")
-    prompt = short + STUDY_PROMPT.format(topic=topic)
 
-    response = chat.send_message(prompt
+    prompt = USER_PROMPT.format(topic=topic)
+
+    response = client.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=prompt,
+        config=types.GenerateContentConfig(
+            system_instruction=SYSTEM_PROMPT,
+        response_mime_type="application/json",
+        response_schema={
+            "type": "OBJECT",
+            "properties": {
+                "definition": {
+                    "type": "STRING"
+                },
+                "example": {
+                    "type": "STRING"
+                },
+                "key_takeaway": {
+                    "type": "STRING"
+                }
+            },
+            "required": [
+                "definition",
+                "example",
+                "key_takeaway"
+            ]
+        }
+        )
     )
 
-    print("\nAI --> " ,response.text)
+
+    result = json.loads(response.text)
+
+    print("\nDefinition:", result["definition"])
+    print("\nExample:", result["example"])
+    print("\nKey Takeaway:", result["key_takeaway"])
