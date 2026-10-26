@@ -1,0 +1,18 @@
+
+RAG stands for Retrieval-Augmented Generation.
+
+RAG helps AI answer questions using external information instead of relying only on its training data.
+
+A RAG system has two main stages: retrieval and generation.
+
+During retrieval, the system searches a knowledge source for information relevant to the user's question.
+
+During generation, the retrieved information is given to a language model, which uses it to create an answer.
+
+Embeddings represent text as numerical vectors. They help computers compare the meaning of text.
+
+A vector database stores vectors and can search for text that is semantically similar to a user's question.
+
+RAG can use company documents, study notes, PDFs, manuals, and other knowledge sources.
+
+RAG does not automatically guarantee correct answers. The retrieved information must be relevant and reliable.
